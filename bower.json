@@ -1,0 +1,22 @@
+{
+  "name": "PaperJS Water Spring",
+  "version": "1.0",
+  "authors": [
+    "rassoh <rasso@basics09.de>"
+  ],
+  "description": "A PaperJS Experiment by BASICS09",
+  "license": "MIT",
+  "homepage": "http://basics09.de",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "assets/vendor"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "paper": "~0.9.22"
+  }
+}
