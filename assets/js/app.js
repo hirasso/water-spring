@@ -13,8 +13,7 @@
 	$(document).ready(function() {
 
 		// initialize the paper animation
-		mypaper = new PaperWrap( $('#my-canvas')[0] );
-		
+		mypaper = new PaperWrap( $('#water-spring')[0] );
 		
 	});
 
@@ -70,10 +69,10 @@
         surface.remove();
       }
       surface = new Path();
-      surface.fullySelected = true;
-
-      var margin = 50;
-
+      // surface.fullySelected = true;
+      surface.fillColor = "#000";
+      var margin = -300;
+      var waterDepth = view.size.height;
 
       surface.add( new Point(margin, view.size.height / 2) );
       surface.add( new Point(view.size.width - margin, view.size.height / 2) );
@@ -95,7 +94,7 @@
         point.fixed = false;
 
         if( i > 0 ) {
-          var spring = new Spring(segment.previous.point, point, 1, segmentWidth * 0.5);
+          var spring = new Spring(segment.previous.point, point, 0.75, segmentWidth * 0.5);
           springs.push(spring);
         }
 
@@ -103,6 +102,12 @@
       surface.firstSegment.point.fixed = true;
       surface.lastSegment.point.fixed = true;
 
+
+      surface.add( new Point(view.size.width - margin, view.size.height / 2 + waterDepth) );
+      surface.lastSegment.point.fixed = true;
+      surface.add( new Point(margin, view.size.height / 2 + waterDepth) );
+      surface.lastSegment.point.fixed = true;
+      surface.closePath();
     }
     createSurface();
 
@@ -111,14 +116,14 @@
     var lastMousePos = view.center.add( new Point(-300, -100) );
 
     var mousePath = new Path( lastMousePos, mousePos );
-        mousePath.strokeColor = 'black';
-        mousePath.fullySelected = true;
+        mousePath.strokeColor = '#ccc';
+        mousePath.fullySelected = false;
     
     var mouseVector = new Point(0,0);
 
     function resetLastMousePos() {
-      lastMousePos = mousePos;
-      setTimeout( resetLastMousePos, 200 );
+      
+      //setTimeout( resetLastMousePos, 200 );
     }
     resetLastMousePos();
 
@@ -134,15 +139,18 @@
       mousePath.removeSegments();
       mousePath.addSegments( [lastMousePos, mousePos] );
       mouseVector = mousePos.subtract( lastMousePos );
+
+      lastMousePos = mousePos;
       // disable the x coordinate on the vector
       mouseVector.x = 0;
 
       for( var i = 0; i < surface.segments.length; i++ ) {
         if( i > 0 && i < surface.segments.length - 1 ) {
-           surface.segments[i].selected = false;
+          //surface.segments[i].selected = false;
         } else {
-          surface.segments[i].selected = true;
+          //surface.segments[i].selected = true;
         }
+        // surface.segments[i].selected = true;
         
       }
       //console.log( mousePath.angle );
@@ -156,7 +164,7 @@
         }
         
         if( !segment.point.fixed  ) {
-          segment.point = segment.point.add( mouseVector.divide(3) );
+          segment.point = segment.point.add( mouseVector.divide(1.01) );
         }
         var next = segment.next;
         var previous = segment.previous;
@@ -170,7 +178,7 @@
 
 
       var surfaceLength = surface.firstSegment.point.getDistance( surface.lastSegment.point );
-      var maxDist = Math.min( view.size.height, Math.max( 0, surfaceLength * 0.4 ) );
+      var maxDist = view.size.height / 2;
 
       for( i = 0; i < surface.segments.length; i++ ) {
         var point = surface.segments[i].point;
@@ -193,6 +201,7 @@
       }
 
       surface.smooth();
+      
 
     };
 
